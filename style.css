@@ -161,7 +161,7 @@ html {
 
 /* Hero Section */
 .hero-section {
-    background: linear-gradient(135deg, rgba(31, 42, 46, 0.85) 0%, rgba(31, 42, 46, 0.75) 100%), url('https://sobhaproperties.org/img/Banner/slider3.jpg');
+    background: linear-gradient(135deg, rgba(31, 42, 46, 0.85) 0%, rgba(31, 42, 46, 0.75) 100%), url('img/heroImg.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
