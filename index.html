@@ -246,108 +246,9 @@
                 <h2 class="pricing-section-title">Our Pricing</h2>
                 <p class="pricing-section-subtitle">The available unit sizes are priced at ₹15,500 per sq. ft.</p>
             </div>
-            <div class="pricing-cards-wrapper">
-                <!-- Top Row - 3 Cards -->
-                <div class="row g-4 mb-4">
-                    <div class="col-lg-4 col-md-6">
-                        <div class="pricing-card reveal-scale">
-                            <div class="paperclip-icons">
-                                <i class="fas fa-paperclip"></i>
-                                <i class="fas fa-paperclip"></i>
-                            </div>
-                            <div class="pricing-header">
-                                <h3>Apartments</h3>
-                                <div class="price-tag">₹ 2 Cr* Onwards</div>
-                            </div>
-                            <div class="pricing-body">
-                                <ul class="price-details">
-                                    <li>Size: 1300 sqft</li>
-                                    <li>Type: 2 BHK+2t</li>
-                                </ul>
-                                <button class="btn-pricing w-100">Interested</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6">
-                        <div class="pricing-card reveal-scale">
-                            <div class="paperclip-icons">
-                                <i class="fas fa-paperclip"></i>
-                                <i class="fas fa-paperclip"></i>
-                            </div>
-                            <div class="pricing-header">
-                                <h3>Apartments</h3>
-                                <div class="price-tag">₹ 2.48 Cr* Onwards</div>
-                            </div>
-                            <div class="pricing-body">
-                                <ul class="price-details">
-                                    <li>Size: 1600 sq.ft</li>
-                                    <li>Type: 3 BHK+2t</li>
-                                </ul>
-                                <button class="btn-pricing w-100">Interested</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6">
-                        <div class="pricing-card reveal-scale">
-                            <div class="paperclip-icons">
-                                <i class="fas fa-paperclip"></i>
-                                <i class="fas fa-paperclip"></i>
-                            </div>
-                            <div class="pricing-header">
-                                <h3>Apartments</h3>
-                                <div class="price-tag">₹ 2.86 Cr* Onwards</div>
-                            </div>
-                            <div class="pricing-body">
-                                <ul class="price-details">
-                                    <li>Size: 1850 sqft</li>
-                                    <li>Type: 3 BHK+3t</li>
-                                </ul>
-                                <button class="btn-pricing w-100">Interested</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Bottom Row - 2 Cards (Centered) -->
-                <div class="row g-4 justify-content-center">
-                    <div class="col-lg-5 col-md-6">
-                        <div class="pricing-card reveal-scale">
-                            <div class="paperclip-icons">
-                                <i class="fas fa-paperclip"></i>
-                                <i class="fas fa-paperclip"></i>
-                            </div>
-                            <div class="pricing-header">
-                                <h3>Apartments</h3>
-                                <div class="price-tag">₹ 3.41 - 3.87 Cr* Onwards</div>
-                            </div>
-                            <div class="pricing-body">
-                                <ul class="price-details">
-                                    <li>Size: 2200–2500 sqft</li>
-                                    <li>Type: 4 BHK+4t</li>
-                                </ul>
-                                <button class="btn-pricing w-100">Interested</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-5 col-md-6">
-                        <div class="pricing-card reveal-scale">
-                            <div class="paperclip-icons">
-                                <i class="fas fa-paperclip"></i>
-                                <i class="fas fa-paperclip"></i>
-                            </div>
-                            <div class="pricing-header">
-                                <h3>Apartments</h3>
-                                <div class="price-tag">₹ 3.87 Cr* Onwards</div>
-                            </div>
-                            <div class="pricing-body">
-                                <ul class="price-details">
-                                    <li>Size: 2500 sqft</li>
-                                    <li>Type: 4 BHK + servant</li>
-                                </ul>
-                                <button class="btn-pricing w-100">Interested</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <!-- Dynamic pricing cards loaded from Sanity -->
+            <div id="pricingCardsContainer" class="pricing-cards-wrapper">
+                <!-- Fallback static content is replaced by JavaScript when Sanity data is available -->
             </div>
         </div>
     </section>
@@ -360,42 +261,9 @@
                 <span class="section-label">Our Master & Floor Plans</span>
                 <h2 class="section-title">Experience Elevated Comfort In Every Detail</h2>
             </div>
-            <div class="row g-4">
-                <div class="col-lg-4 col-md-6">
-                    <div class="floorplan-card reveal-fade">
-                        <a href="#" class="floorplan-link">
-                            <div class="image-container">
-                                <img src="img/plan1.jfif" alt="Master Plan" class="img-fluid" loading="lazy" onerror="this.src='https://via.placeholder.com/600x400/f9fafb/1f2937?text=Master+Plan'">
-                                <div class="image-overlay-hover"></div>
-                            </div>
-                        </a>
-                        <h3>Master Plan</h3>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6">
-                    <div class="floorplan-card reveal-fade">
-                        <div class="floorplan-image-wrapper">
-                            <div class="image-container">
-                                <img src="img/plan2.jfif" alt="3 BHK Floor Plan" class="img-fluid" loading="lazy" onerror="this.src='https://via.placeholder.com/600x400/f9fafb/1f2937?text=3+BHK'">
-                                <div class="image-overlay-hover"></div>
-                            </div>
-                            <a href="#" class="btn btn-light btn-sm btn-hover-effect">Know More</a>
-                        </div>
-                        <h3>3 BHK</h3>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6">
-                    <div class="floorplan-card reveal-fade">
-                        <div class="floorplan-image-wrapper">
-                            <div class="image-container">
-                                <img src="img/plan3.jfif" alt="4 BHK Floor Plan" class="img-fluid" loading="lazy" onerror="this.src='https://via.placeholder.com/600x400/f9fafb/1f2937?text=4+BHK'">
-                                <div class="image-overlay-hover"></div>
-                            </div>
-                            <a href="#" class="btn btn-light btn-sm btn-hover-effect">Know More</a>
-                        </div>
-                        <h3>4 BHK</h3>
-                    </div>
-                </div>
+            <!-- Dynamic floor plans loaded from Sanity -->
+            <div id="floorPlansContainer" class="row g-4">
+                <!-- Fallback static content is replaced by JavaScript when Sanity data is available -->
             </div>
         </div>
     </section>

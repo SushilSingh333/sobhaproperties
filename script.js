@@ -33,7 +33,23 @@ const debounce = (func, wait) => {
 
 // ===== Wait for DOM to be fully loaded =====
 document.addEventListener('DOMContentLoaded', function() {
-    
+
+    // ===== SANITY CONFIG (FILL THESE FROM YOUR PROJECT) =====
+    const SANITY_PROJECT_ID = 'em5knz6r';   
+    const SANITY_DATASET = 'production';        
+    const SANITY_API_VERSION = '2023-10-10';      // e.g. from sanity.config.ts
+   const SANITY_BASE_URL = `https://${SANITY_PROJECT_ID}.apicdn.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}`;
+
+
+    // Basic helper to call GROQ
+    async function fetchFromSanity(groqQuery) {
+        const url = `${SANITY_BASE_URL}?query=${encodeURIComponent(groqQuery)}`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('Sanity request failed');
+        const json = await res.json();
+        return json.result || [];
+    }
+
     // ===== Scroll Progress Indicator =====
     const scrollProgress = document.getElementById('scrollProgress');
     
@@ -315,42 +331,50 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // ===== Pricing Card Button Click Handlers =====
-    const pricingButtons = document.querySelectorAll('.btn-pricing');
-    
-    pricingButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Add ripple effect
-            const ripple = document.createElement('span');
-            const rect = this.getBoundingClientRect();
-            const size = Math.max(rect.width, rect.height);
-            const x = e.clientX - rect.left - size / 2;
-            const y = e.clientY - rect.top - size / 2;
-            
-            ripple.style.width = ripple.style.height = size + 'px';
-            ripple.style.left = x + 'px';
-            ripple.style.top = y + 'px';
-            ripple.classList.add('ripple-effect');
-            
-            this.appendChild(ripple);
-            
-            setTimeout(() => {
-                ripple.remove();
-            }, 600);
-            
-            // Scroll to contact form
-            const contactSection = document.getElementById('contactus');
-            if (contactSection) {
-                const offsetTop = contactSection.offsetTop - 90;
-                window.scrollTo({
-                    top: offsetTop,
-                    behavior: 'smooth'
-                });
-            }
+    // ===== Pricing Card Button Click Handlers (static & Sanity-loaded) =====
+    function attachPricingButtonHandlers() {
+        const pricingButtons = document.querySelectorAll('.btn-pricing');
+        
+        pricingButtons.forEach(button => {
+            // avoid duplicate listeners
+            if (button.dataset.bound === 'true') return;
+            button.dataset.bound = 'true';
+
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Add ripple effect
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.classList.add('ripple-effect');
+                
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+                
+                // Scroll to contact form
+                const contactSection = document.getElementById('contactus');
+                if (contactSection) {
+                    const offsetTop = contactSection.offsetTop - 90;
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
+            });
         });
-    });
+    }
+
+    attachPricingButtonHandlers();
     
     // ===== Floor Plan Button Handlers =====
     const floorplanButtons = document.querySelectorAll('.floorplan-card .btn');
@@ -431,6 +455,110 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
+    // ===== Load dynamic content from Sanity =====
+    async function loadPricingCards() {
+        const container = document.getElementById('pricingCardsContainer');
+       if (!container || !SANITY_PROJECT_ID) return;
+
+
+        try {
+            const cards = await fetchFromSanity(
+                '*[_type == "pricingCard"] | order(order asc)'
+            );
+
+            if (!cards.length) return;
+
+            container.innerHTML = '';
+
+            const row = document.createElement('div');
+            row.className = 'row g-4 mb-4';
+
+            cards.forEach(card => {
+                const col = document.createElement('div');
+                col.className = 'col-lg-4 col-md-6';
+
+                col.innerHTML = `
+                    <div class="pricing-card reveal-scale">
+                        <div class="paperclip-icons">
+                            <i class="fas fa-paperclip"></i>
+                            <i class="fas fa-paperclip"></i>
+                        </div>
+                        <div class="pricing-header">
+                            <h3>${card.title}</h3>
+                            <div class="price-tag">${card.priceLabel}</div>
+                        </div>
+                        <div class="pricing-body">
+                            <ul class="price-details">
+                                <li>Size: ${card.size}</li>
+                                <li>Type: ${card.unitType}</li>
+                            </ul>
+                            <button class="btn-pricing w-100">Interested</button>
+                        </div>
+                    </div>
+                `;
+
+                row.appendChild(col);
+            });
+
+            container.appendChild(row);
+
+            // re-attach button handlers to new buttons
+            attachPricingButtonHandlers();
+        } catch (err) {
+            console.error('Error loading pricing cards from Sanity:', err);
+        }
+    }
+
+    async function loadFloorPlans() {
+        const container = document.getElementById('floorPlansContainer');
+        if (!container || !SANITY_PROJECT_ID) return;
+
+
+        try {
+            const plans = await fetchFromSanity(
+                `*[_type == "floorPlan"] | order(order asc){
+                    _id,
+                    title,
+                    category,
+                    showButton,
+                    "imageUrl": image.asset->url
+                }`
+            );
+
+            if (!plans.length) return;
+
+            container.innerHTML = '';
+
+            plans.forEach(plan => {
+                const col = document.createElement('div');
+                col.className = 'col-lg-4 col-md-6';
+
+                const showButton = plan.showButton !== false;
+
+                col.innerHTML = `
+                    <div class="floorplan-card reveal-fade">
+                        <div class="floorplan-image-wrapper">
+                            <div class="image-container">
+                                <img src="${plan.imageUrl}" alt="${plan.title}" class="img-fluid" loading="lazy">
+                                <div class="image-overlay-hover"></div>
+                            </div>
+                            ${showButton ? '<a href="#" class="btn btn-light btn-sm btn-hover-effect">Know More</a>' : ''}
+                        </div>
+                        <h3>${plan.category}</h3>
+                    </div>
+                `;
+
+                container.appendChild(col);
+            });
+        } catch (err) {
+            console.error('Error loading floor plans from Sanity:', err);
+        }
+    }
+
+    // Trigger Sanity content loading
+    loadPricingCards();
+    loadFloorPlans();
+
     // ===== Performance: Preload Critical Images =====
     const preloadCriticalImages = () => {
         const criticalImages = [
