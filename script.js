@@ -38,13 +38,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const SANITY_PROJECT_ID = 'em5knz6r';   
     const SANITY_DATASET = 'production';        
     const SANITY_API_VERSION = '2023-10-10';      // e.g. from sanity.config.ts
-   const SANITY_BASE_URL = `https://${SANITY_PROJECT_ID}.apicdn.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}`;
+    // Use the non-CDN API so that fresh content appears immediately after you publish in Sanity
+    const SANITY_BASE_URL = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}`;
 
 
     // Basic helper to call GROQ
     async function fetchFromSanity(groqQuery) {
         const url = `${SANITY_BASE_URL}?query=${encodeURIComponent(groqQuery)}`;
-        const res = await fetch(url);
+        // Disable caching so that updates in Sanity show up on the site immediately
+        const res = await fetch(url, { cache: 'no-store' });
         if (!res.ok) throw new Error('Sanity request failed');
         const json = await res.json();
         return json.result || [];
@@ -504,6 +506,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // re-attach button handlers to new buttons
             attachPricingButtonHandlers();
+
+            // Observe newly added pricing cards for reveal animations
+            const newRevealElements = container.querySelectorAll('.reveal-fade, .reveal-slide-left, .reveal-slide-right, .reveal-scale, .reveal-zoom');
+            newRevealElements.forEach(element => {
+                revealObserver.observe(element);
+            });
         } catch (err) {
             console.error('Error loading pricing cards from Sanity:', err);
         }
@@ -535,11 +543,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 const showButton = plan.showButton !== false;
 
+                // Fallback image in case the Sanity asset is missing
+                const imageSrc = plan.imageUrl || 'https://via.placeholder.com/600x400?text=Floor+Plan';
+
                 col.innerHTML = `
                     <div class="floorplan-card reveal-fade">
                         <div class="floorplan-image-wrapper">
                             <div class="image-container">
-                                <img src="${plan.imageUrl}" alt="${plan.title}" class="img-fluid" loading="lazy">
+                                <img src="${imageSrc}" alt="${plan.title}" class="img-fluid" loading="lazy">
                                 <div class="image-overlay-hover"></div>
                             </div>
                             ${showButton ? '<a href="#" class="btn btn-light btn-sm btn-hover-effect">Know More</a>' : ''}
@@ -549,6 +560,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 `;
 
                 container.appendChild(col);
+            });
+
+            // Observe newly added floor plan cards for reveal animations
+            const newRevealElements = container.querySelectorAll('.reveal-fade, .reveal-slide-left, .reveal-slide-right, .reveal-scale, .reveal-zoom');
+            newRevealElements.forEach(element => {
+                revealObserver.observe(element);
+            });
+
+            // Hook newly added lazy images into the lazy-loading observer
+            const newLazyImages = container.querySelectorAll('img[loading="lazy"]');
+            newLazyImages.forEach(img => {
+                if (!img.complete) {
+                    img.style.opacity = '0';
+                } else {
+                    img.classList.add('loaded');
+                    img.style.opacity = '1';
+                }
+                imageObserver.observe(img);
             });
         } catch (err) {
             console.error('Error loading floor plans from Sanity:', err);
