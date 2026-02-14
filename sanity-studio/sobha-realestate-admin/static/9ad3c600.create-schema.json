@@ -1,0 +1,54 @@
+[
+  {
+    "fields": [
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "priceLabel",
+        "type": "string"
+      },
+      {
+        "name": "size",
+        "type": "string"
+      },
+      {
+        "name": "unitType",
+        "type": "string"
+      },
+      {
+        "name": "order",
+        "type": "number"
+      }
+    ],
+    "name": "pricingCard",
+    "type": "document"
+  },
+  {
+    "fields": [
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "category",
+        "type": "string"
+      },
+      {
+        "name": "image",
+        "type": "image"
+      },
+      {
+        "name": "showButton",
+        "type": "boolean"
+      },
+      {
+        "name": "order",
+        "type": "number"
+      }
+    ],
+    "name": "floorPlan",
+    "type": "document"
+  }
+]
